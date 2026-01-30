@@ -13,18 +13,18 @@ The goal is to recreate the logic behind apps like Google Authenticator. The pro
 
 ## Architecture
 
-### 1. The Engine (`core.nim`)
+### 1. The Engine
 
-- **Target:** C Backend (`nim c core.nim`)
+- **Target:** C Backend
 - **Responsibilities:**
   - Implementing the **Base32** encoding/decoding (the standard format for TOTP secrets).
   - Performing the **HMAC-SHA1** hash.
   - Extracting the 6-digit code using dynamic truncation.
 - **Key Libraries:** `std/sha1`, `std/times`.
 
-### 2. The Web Frontend (`app.nim`)
+### 2. The Web Frontend
 
-- **Target:** JS Backend (`nim js app.nim`)
+- **Target:** JS Backend
 - **Responsibilities:**
   - Interfacing with the browser's DOM.
   - Generating a `otpauth://` URI to create a QR code.
@@ -46,18 +46,25 @@ The goal is to recreate the logic behind apps like Google Authenticator. The pro
 ## Project Structure
 
 ```bash
-chronos_otp/
-├── chronos_otp.nimble   # Package config
-├── index.html           # Base layout
-├── styles.css           # Styling
+ChronosOTP/
+├── ChronosOTP.nimble       # Package config
+├── build.nim               # used by `Nimble build`
 ├── src/
-│   ├── engine/          # C Backend (Logic)
-│   │   ├── base32.nim   # Secret decoding
-│   │   ├── hmac.nim     # Crypto logic
-│   │   └── totp.nim     # Orchestrator (The Engine)
-│   └── viewer/          # JS Backend (UI)
-│       ├── dom_utils.nim # DOM manipulation
-│       └── main_ui.nim   # Entry point for JS
+│   ├── index.html          # Base layout
+│   ├── styles.css          # Styling
+│   ├── engine/
+│   │   ├── base32.nim      # Secret decoding
+│   │   ├── hmac.nim        # Crypto logic
+│   │   ├── totp.nim        # Orchestrator (The Engine)
+│   │   └── server.nim      # HTTP server wrapper
+│   └── viewer/
+│       ├── dom_utils.nim   # DOM manipulation
+│       └── main_ui.nim     # Entry point for JS
+├── build/                  # Output directory
+│   ├── chronos_server      # C backend executable
+│   ├── chronos_ui.js       # JS frontend
+│   └── index.html          # Copied from src/
+└── public/                 # For serving static files
 ```
 
 ---
